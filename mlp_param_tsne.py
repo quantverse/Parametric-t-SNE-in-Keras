@@ -168,7 +168,7 @@ for epoch in range(nb_epoch):
 
     # train
     loss = 0
-    for i in range(0, n, batch_size):
+    for i in range(0, m, batch_size):
         loss += model.train_on_batch(X[i:i+batch_size], P[i:i+batch_size])
     print("Epoch: {}/{}, loss: {}".format(epoch+1, nb_epoch, loss / batch_num))
 
