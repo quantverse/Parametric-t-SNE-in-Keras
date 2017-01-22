@@ -48,7 +48,7 @@ def x2p_job(data):
     while np.abs(Hdiff) > tol and tries < 50:
         if Hdiff > 0:
             betamin = beta
-            if betamax == -np.inf:
+            if betamax == np.inf:
                 beta = beta * 2
             else:
                 beta = (betamin + betamax) / 2
@@ -127,6 +127,7 @@ print("load data")
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 n, row, col = X_train.shape
 channel = 1
+print(n, row, col, channel)
 
 X_train = X_train.reshape(-1, channel * row * col)
 X_test = X_test.reshape(-1, channel * row * col)
@@ -139,7 +140,8 @@ print("X_test.shape:", X_test.shape)
 
 batch_num = int(n // batch_size)
 m = batch_num * batch_size
-
+print(batch_num, m)
+# exit(1)
 
 print("build model")
 model = Sequential()
