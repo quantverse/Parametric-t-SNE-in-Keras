@@ -20,11 +20,11 @@ from matplotlib.animation import ArtistAnimation
 import multiprocessing as mp
 
 
-batch_size = 5000
+batch_size = 2500
 low_dim = 2
 nb_epoch = 100
 shuffle_interval = nb_epoch + 1
-n_jobs = 4
+n_jobs = 1
 perplexity = 30.0
 
 
@@ -78,7 +78,7 @@ def x2p(X):
     D = D[idx].reshape([n, -1])
 
     def generator():
-        for i in xrange(n):
+        for i in range(n):
             yield i, D[i], tol, logU
 
     pool = mp.Pool(n_jobs)
@@ -91,10 +91,10 @@ def x2p(X):
 
 
 def calculate_P(X):
-    print "Computing pairwise distances..."
+    print("Computing pairwise distances...")
     n = X.shape[0]
     P = np.zeros([n, batch_size])
-    for i in xrange(0, n, batch_size):
+    for i in range(0, n, batch_size):
         P_batch = x2p(X[i:i + batch_size])
         P_batch[np.isnan(P_batch)] = 0
         P_batch = P_batch + P_batch.T
@@ -118,7 +118,7 @@ def KLdivergence(P, Y):
     return C
 
 
-print "load data"
+print("load data")
 # # cifar-10
 # (X_train, y_train), (X_test, y_test) = cifar10.load_data()
 # n, channel, row, col = X_train.shape
@@ -134,14 +134,14 @@ X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
 X_train /= 255
 X_test /= 255
-print "X_train.shape:", X_train.shape
-print "X_test.shape:", X_test.shape
+print("X_train.shape:", X_train.shape)
+print("X_test.shape:", X_test.shape)
 
 batch_num = int(n // batch_size)
 m = batch_num * batch_size
 
 
-print "build model"
+print("build model")
 model = Sequential()
 model.add(Dense(500, input_shape=(X_train.shape[1],)))
 model.add(Activation('relu'))
@@ -154,7 +154,7 @@ model.add(Dense(2))
 model.compile(loss=KLdivergence, optimizer="adam")
 
 
-print "fit"
+print("fit")
 images = []
 fig = plt.figure(figsize=(5, 5))
 
@@ -166,9 +166,9 @@ for epoch in range(nb_epoch):
 
     # train
     loss = 0
-    for i in xrange(0, n, batch_size):
+    for i in range(0, n, batch_size):
         loss += model.train_on_batch(X[i:i+batch_size], P[i:i+batch_size])
-    print "Epoch: {}/{}, loss: {}".format(epoch+1, nb_epoch, loss / batch_num)
+    print("Epoch: {}/{}, loss: {}".format(epoch+1, nb_epoch, loss / batch_num))
 
     # visualize training process
     pred = model.predict(X_test)
